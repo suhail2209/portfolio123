@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suhail — UI/UX Designer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // Dev aid: append ?debug to surface runtime errors on screen (useful for headless checks).
+      if (location.search.includes('debug')) {
+        const box = document.createElement('pre')
+        box.id = 'debug-errors'
+        box.style.cssText =
+          'position:fixed;left:0;bottom:0;max-width:60vw;max-height:40vh;overflow:auto;margin:0;padding:8px;background:rgba(120,0,0,.85);color:#fff;font:11px/1.4 monospace;z-index:9999;white-space:pre-wrap;display:none'
+        const perf = document.createElement('div')
+        perf.id = 'debug-perf'
+        perf.style.cssText =
+          'position:fixed;right:0;top:0;padding:6px 10px;background:rgba(0,0,0,.7);color:#fff;font:11px/1.4 monospace;z-index:9999'
+        document.addEventListener('DOMContentLoaded', () => {
+          document.body.appendChild(box)
+          document.body.appendChild(perf)
+        })
+        const log = (m) => {
+          box.style.display = 'block'
+          box.textContent += m + '\n'
+        }
+        window.addEventListener('error', (e) => log('ERROR: ' + e.message + ' @ ' + (e.filename || '') + ':' + e.lineno))
+        window.addEventListener('unhandledrejection', (e) => log('REJECTION: ' + (e.reason && (e.reason.stack || e.reason.message || e.reason))))
+        const ce = console.error.bind(console)
+        console.error = (...a) => {
+          log('console.error: ' + a.map((x) => (x && x.stack) || String(x)).join(' ').slice(0, 600))
+          ce(...a)
+        }
+        const cw = console.warn.bind(console)
+        console.warn = (...a) => {
+          log('console.warn: ' + a.map((x) => String(x)).join(' ').slice(0, 300))
+          cw(...a)
+        }
+      }
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
